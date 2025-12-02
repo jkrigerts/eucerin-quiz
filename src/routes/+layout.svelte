@@ -13,16 +13,22 @@
 </div>
 
 <style>
+	:global(html, body) {
+		overflow: hidden;
+		height: 100%;
+	}
 	.app-container {
 		min-height: 100vh;
 		background: #ffffff;
-		padding: 2rem 1.5rem;
+		padding: 3rem 1.5rem;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		box-sizing: border-box;
 		font-family: "Montserrat", sans-serif;
 		color: #0d233f; /* Close to Eucerin dark blue */
+		overflow: hidden;
+		height: 100vh;
 	}
 
 	.header {
@@ -35,6 +41,6 @@
 
 	.content {
 		width: 100%;
-		max-width: 620px;
+		max-width: 680px;
 	}
 </style>
