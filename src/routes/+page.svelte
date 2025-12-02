@@ -1,30 +1,35 @@
 <script>
     import { allQuestions } from "$lib/questions.js";
 
-    // Pick random 3 questions
-    let questions = allQuestions.sort(() => Math.random() - 0.5).slice(0, 3);
+    // always clone before shuffling (avoid mutating allQuestions)
+    function pickRandomQuestions() {
+        return [...allQuestions].sort(() => Math.random() - 0.5).slice(0, 3);
+    }
 
-    let current = 0;
-    let selected = null;
-    let score = 0;
-    let finished = false;
+    // STATE (runes)
+    let questions = $state(pickRandomQuestions());
+    let current = $state(0);
+    let selected = $state(null);
+    let score = $state(0);
+    let finished = $state(true);
 
-    let reviewing = false; // after answer selected
-    let reviewSecondsLeft = 20;
+    let reviewing = $state(false);
+    let reviewSecondsLeft = $state(20);
+    let showFeedback = $state(false);
+    let feedbackText = $state("");
+    let feedbackType = $state(""); // "correct" | "wrong"
+
     let reviewTimer = null;
 
-    let showFeedback = false;
-    let feedbackText = "";
-    let feedbackType = ""; // "correct" or "wrong"
-
-    function choose(index) {
+    // ACTIONS
+    function choose(i) {
         if (selected !== null) return;
 
-        selected = index;
+        selected = i;
         reviewing = true;
         reviewSecondsLeft = 20;
 
-        const correct = index === questions[current].correct;
+        const correct = i === questions[current].correct;
 
         if (correct) {
             score++;
@@ -36,12 +41,12 @@
         }
 
         showFeedback = true;
-
         startReviewTimer();
     }
 
     function startReviewTimer() {
         clearInterval(reviewTimer);
+
         reviewTimer = setInterval(() => {
             reviewSecondsLeft--;
             if (reviewSecondsLeft <= 0) {
@@ -65,11 +70,10 @@
     }
 
     function restart() {
-        questions = allQuestions.sort(() => Math.random() - 0.5).slice(0, 3);
-
+        questions = pickRandomQuestions();
         current = 0;
-        score = 0;
         selected = null;
+        score = 0;
         finished = false;
         reviewing = false;
         showFeedback = false;
@@ -81,16 +85,14 @@
     <h1 class="title">{@html questions[current].text}</h1>
 
     <div class="answers">
-        {#each questions[current].answers as ans, i}
+        {#each questions[current].answers as ans, i (ans)}
             <button
                 class="
-          answer-btn
-          {selected !== null && i === questions[current].correct
-                    ? 'correct'
-                    : ''}
-          {selected === i && i !== questions[current].correct ? 'wrong' : ''}
-        "
-                on:click={() => choose(i)}
+					answer-btn
+					{selected !== null && i === questions[current].correct ? 'correct' : ''}
+					{selected === i && i !== questions[current].correct ? 'wrong' : ''}
+				"
+                onclick={() => choose(i)}
                 disabled={selected !== null}
             >
                 {@html ans}
@@ -99,7 +101,7 @@
     </div>
 
     {#if reviewing}
-        <button class="next-btn" on:click={nextQuestion}>NĀKAMAIS</button>
+        <button class="next-btn" onclick={nextQuestion}>NĀKAMAIS</button>
         <p class="timer">Nākamais jautājums pēc: {reviewSecondsLeft}s</p>
     {/if}
 
@@ -113,7 +115,7 @@
         <h1 class="title">Jūsu rezultāts</h1>
         <p class="subtitle">{score} / {questions.length}</p>
 
-        <button class="restart-btn" on:click={restart}> SĀKT NO JAUNA </button>
+        <button class="restart-btn" onclick={restart}>SĀKT NO JAUNA</button>
     </div>
 {/if}
 
