@@ -61,7 +61,7 @@ export const allQuestions = [
     },
     {
         text: "Vai <em>Hyaluron-Filler</em> līnijā ir produkti ar SPF aizsardzību?",
-        answers: ["Jā, ir pieejami", "Nē, SPF ir tikai nakts krēmos", "Tikai ķermeņa eļļās"],
+        answers: ["Jā", "Nē, SPF ir tikai nakts krēmos", "Tikai ķermeņa eļļās"],
         correct: 0
     },
     {
