@@ -1,5 +1,5 @@
 <script>
-    import { allQuestions } from "$lib/questions.js";
+    import { allQuestions } from "#lib/questions.js";
 
     // always clone before shuffling (avoid mutating allQuestions)
     function pickRandomQuestions() {
